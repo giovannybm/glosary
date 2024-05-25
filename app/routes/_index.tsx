@@ -1,4 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
+import { Input } from "@nextui-org/input";
+import data from "../utils/data";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,35 +9,37 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+function capitalizeFirstLetter(string: string) {
+  if (!string) return string; // Maneja el caso de una cadena vacía
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+function compareByName(a:any, b:any) {
+  const nameA = a.word.toUpperCase();
+  const nameB = b.word.toUpperCase();
+
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+  return 0;
+}
+const sortData = data.sort(compareByName);
+
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
+    <div className="md:w-4/5 mx-auto">
+      <h1 className="my-8">GLOSARY</h1>
+
+      {sortData.map((e) => {
+        return (
+          <a href={`definition/${e?.word.toLowerCase()}`}>
+            <h2>{capitalizeFirstLetter(e.word)}</h2>
           </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+        );
+      })}
     </div>
   );
 }
